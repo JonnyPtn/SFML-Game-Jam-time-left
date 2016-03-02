@@ -19,7 +19,7 @@ def checkTimeLeft(bot):
 	db = SopelDB(bot.config)
 	lasthoursleft = db.get_nick_value(bot.nick,"hoursleft")
 	if lasthoursleft is not hoursleft :	
-		bot.say("Less than " + str(lasthoursleft) + " hours remaining!" ,"#sfmlgamejam")
+		bot.say("Less than " + str(timeleft.days) + " Days, " + str(lasthoursleft) + " hours remaining!" ,"#sfmlgamejam")
 		db.set_nick_value(bot.nick,"hoursleft",hoursleft)
 
 def getTimeLeft() :
