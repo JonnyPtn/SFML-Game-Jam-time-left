@@ -3,6 +3,7 @@ from sopel.db import SopelDB
 import re
 import urllib
 import datetime
+import requests
 
 @module.commands(r"timeleft")
 def timeLeft(bot, trigger):
@@ -15,12 +16,12 @@ def timeLeft(bot, trigger):
 @module.interval(10)
 def checkTimeLeft(bot):
 	timeleft = getTimeLeft()
-	hoursleft = timeleft.seconds//3600
+	daysleft = timeleft.days
 	db = SopelDB(bot.config)
-	lasthoursleft = db.get_nick_value(bot.nick,"hoursleft")
-	if lasthoursleft is not hoursleft :	
-		bot.say("Less than " + str(timeleft.days) + " Days, " + str(lasthoursleft) + " hours remaining!" ,"#sfmlgamejam")
-		db.set_nick_value(bot.nick,"hoursleft",hoursleft)
+	lastdaysleft = db.get_nick_value(bot.nick,"daysleft")
+	if lastdaysleft is not daysleft :	
+		bot.say("Less than " + str(lastdaysleft) + " Days remaining!" ,"#sfmlgamejam")
+		db.set_nick_value(bot.nick,"daysleft",daysleft)
 
 def getTimeLeft() :
 	page = urllib.urlopen("https://sfmlgamejam.com/jams/2")
@@ -30,3 +31,7 @@ def getTimeLeft() :
 	timeleft = datetime.timedelta(seconds = float(results[0]))
 	return timeleft
 
+@module.commands("apicheck")
+def apiRequest(bot, trigger):
+	response = requests.post("https://sfmlgamejam.com/api/v1/jams")
+	bot.reply(response.text)
